@@ -68,10 +68,11 @@ exports.post = (req, res) => {
         }
     )
 
-
     user.save()
         .then(user => {
-            res.json(userResponse(user));
+            User.find(geoQuery(user)).then(localUsers => {
+                res.json(userResponse(user, localUsers));
+            })
         })
         .catch(err => {
             logger.error(err);
@@ -116,6 +117,7 @@ const userResponse = (user, localUsers) => {
 
 const geoQuery = (user) => {
     return {
+        _id: { $ne: user._id },
         loc:
             {
                 $geoWithin:
