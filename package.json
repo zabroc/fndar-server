@@ -1,5 +1,5 @@
 {
-	"name": "bumsradar-api",
+	"name": "FNDAR-api",
 	"version": "0.1",
 	"description": "",
 	"scripts": {
@@ -7,8 +7,7 @@
 		"watch": "nodemon --ignore dist/ start",
 		"build": "./build.sh"
 	},
-	"license": "BSD-3-Clause",
-	"keywords": ["API", "Express", "REST", "Mongoose", "MongoDB"],
+	"license": "MIT",
 	"dependencies": {
 		"babel-cli": "^6.26.0",
 		"babel-preset-env": "^1.6.1"

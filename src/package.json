@@ -1,7 +1,7 @@
 {
-  "name": "api",
-  "version": "1.0.0",
-  "description": "Boilerplate API for Express, Mongoose, and MongoDB.",
+  "name": "FNDAR-API",
+  "version": "1.0",
+  "description": "The FNDAR server",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,21 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/GetStream/node-express-mongo-api.git"
+    "url": "git+https://github.com/zabroc/fndar-server.git"
   },
-  "keywords": [
-    "API",
-    "REST",
-    "Mongoose",
-    "MongoDB",
-    "Express"
-  ],
-  "author": "Nick Parsons <nick@getstream.io>",
+  "keywords": [],
+  "author": "Martin Holbe <martin.holbe@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/GetStream/node-express-mongo-api/issues"
+    "url": "https://github.com/zabroc/fndar-server/issues"
   },
-  "homepage": "https://github.com/GetStream/node-express-mongo-api#readme",
   "dependencies": {
     "async": "^2.6.0",
     "axios": "^0.17.1",
@@ -41,6 +34,7 @@
     "mongoose-timestamp": "^0.6.0",
     "moniker": "^0.1.2",
     "serve-favicon": "^2.4.5",
+    "socket.io": "^2.1.0",
     "validator": "^9.4.0",
     "winston": "^2.4.0",
     "winston-papertrail": "^1.0.5"

@@ -1,6 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import express from 'express';
+import http from 'http';
+import SocketIO from 'socket.io';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import winston from 'winston';
@@ -11,6 +13,8 @@ import config from './config';
 import logger from './utils/logger';
 
 const api = express();
+const server = http.Server(api);
+const io = new SocketIO(server);
 
 api.use(cors());
 api.use(compression());
@@ -37,7 +41,14 @@ api.use(
 );
 
 
+api.use(function(req, res, next){
+    res.io = io;
+    next();
+});
+
+
 api.listen(config.server.port, err => {
+
     if (err) {
         logger.error(err);
         process.exit(1);
@@ -52,6 +63,11 @@ api.listen(config.server.port, err => {
     logger.info(
         `API is now running on port ${config.server.port} in ${config.env} mode`
     );
+
+
 });
+
+
+
 
 module.exports = api;
