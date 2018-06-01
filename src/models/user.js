@@ -42,7 +42,6 @@ UserSchema.pre('save', function(next) {
     //@todo: check for collisions
     const monikerNames = Moniker.generator([Moniker.adjective, Moniker.noun]);
     this.username = monikerNames.choose();
-    logger.info(this.username);
 
     next();
 

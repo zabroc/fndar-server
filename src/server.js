@@ -11,22 +11,36 @@ import expressWinston from 'express-winston';
 
 import config from './config';
 import logger from './utils/logger';
+import {hmacAuth} from './utils/auth';
+
 
 const api = express();
 const server = http.Server(api);
 const io = new SocketIO(server);
 
+
+//all the middleware
 api.use(cors());
 api.use(compression());
 api.use(bodyParser.urlencoded({extended: true}));
 api.use(bodyParser.json());
 
 
+
+api.use((req, res, next) => {
+    hmacAuth(req, res);
+    next();
+});
+
+
 api.use((err, req, res, next) => {
     if (err.name === 'UnauthorizedError') {
-        res.status(401).send('Missing authentication credentials.');
+        res.status(401).send(err.toString());
     }
+    next()
 });
+
+
 
 api.use(
     expressWinston.logger({
@@ -41,7 +55,8 @@ api.use(
 );
 
 
-api.use(function(req, res, next){
+api.use(function (req, res, next) {
+
     res.io = io;
     next();
 });
@@ -66,8 +81,6 @@ api.listen(config.server.port, err => {
 
 
 });
-
-
 
 
 module.exports = api;
