@@ -1,8 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 import express from 'express';
-import http from 'http';
+import https from 'https';
 import SocketIO from 'socket.io';
+
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import winston from 'winston';
@@ -14,35 +15,40 @@ import logger from './utils/logger';
 import {hmacAuth} from './utils/auth';
 
 
-const api = express();
-const server = http.Server(api);
+
+//create server
+const app = express();
+
+var options = {
+    key: config.ssl.key,
+    cert: config.ssl.cert,
+    requestCert: false,
+    rejectUnauthorized: false
+};
+
+const server = https.Server(options, app);
 const io = new SocketIO(server);
 
 
+
 //all the middleware
-api.use(cors());
-api.use(compression());
-api.use(bodyParser.urlencoded({extended: true}));
-api.use(bodyParser.json());
+app.use(cors());
+app.use(compression());
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+
+//app.use(hmacAuth.unless({path: '/chat'}));
 
 
-
-api.use((req, res, next) => {
-    hmacAuth(req, res);
-    next();
-});
-
-
-api.use((err, req, res, next) => {
+app.use((err, req, res, next) => {
     if (err.name === 'UnauthorizedError') {
         res.status(401).send(err.toString());
+    } else {
+        next()
     }
-    next()
 });
 
-
-
-api.use(
+app.use(
     expressWinston.logger({
         transports: [
             new winston.transports.Console({
@@ -54,15 +60,13 @@ api.use(
     })
 );
 
-
-api.use(function (req, res, next) {
-
-    res.io = io;
+app.use(function (req, res, next) {
+    logger.info(req.url);
+    req.io = io;
     next();
 });
 
-
-api.listen(config.server.port, err => {
+server.listen(config.server.port, err => {
 
     if (err) {
         logger.error(err);
@@ -72,15 +76,14 @@ api.listen(config.server.port, err => {
     require('./utils/db');
 
     fs.readdirSync(path.join(__dirname, 'routes')).map(file => {
-        require('./routes/' + file)(api);
+        require('./routes/' + file)(app, io);
     });
 
     logger.info(
-        `API is now running on port ${config.server.port} in ${config.env} mode`
+        `app is now running on port ${config.server.port} in ${config.env} mode`
     );
 
 
 });
 
-
-module.exports = api;
+module.exports = app;
