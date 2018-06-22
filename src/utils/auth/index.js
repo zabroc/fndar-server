@@ -2,6 +2,8 @@ import config from '../../config';
 import logger from '../logger';
 import crypto from 'crypto';
 import url from 'url';
+import unless from 'express-unless';
+
 
 
 
@@ -33,4 +35,6 @@ export function hmacAuth(req, res) {
 
     return true;
 }
+
+hmacAuth.unless = unless;
 

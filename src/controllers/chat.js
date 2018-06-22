@@ -1,12 +1,22 @@
 import logger from '../utils/logger';
 
 exports.connect = (req, res) => {
-    logger.info(res.io);
+    const io = req.io;
 
-    res.io.on('connection', function(socket) {
+    io.on('connection', function (socket) {
         logger.info('a user connected with id %s', socket.id);
-        //socket.emit("socketToMe", "users");
+        //logger.info(socket);
 
+        socket.on('subscribe', function (room) {
+            console.log('joining room', room);
+            socket.join(room);
+        });
+
+        socket.on('send message', function (data) {
+            console.log('sending room post', data.room);
+            socket.broadcast.to(data.room).emit('conversation private post', {
+                message: data.message
+            });
+        });
     });
-    //res.send('respond with a resource.');
 };
