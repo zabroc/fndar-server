@@ -10,7 +10,7 @@ export default {
     },
     ssl : {
         key: fs.readFileSync('../ssl/private.key'),
-        cert: fs.readFileSync( '../ssl/localhost.crt' ),
+        cert: fs.readFileSync( '../ssl/ec2-35-171-163-179.crt' ),
     },
     database: {
         uri: process.env.DB_URI,
